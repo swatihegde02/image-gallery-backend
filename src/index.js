@@ -90,13 +90,16 @@ app.post(
   authenticateUser,
   upload.single("image"),
   asyncHandler(async (req, res) => {
-    const { title, content, authorId } = req.body;
+    const { name: title, description: content, category } = req.body;
     if (!req.file) {
       return res.status(400).json({ status: false, error: "No file uploaded" });
     }
+
     const image = `/uploads/${req.file.filename}`;
+    const authorId = req.user.userId;
+    console.log(authorId)
     const post = await prisma.post.create({
-      data: { title, content, authorId, image },
+      data: { title, content, authorId, category, image },
     });
     res.json({ status: true, data: post });
   })
